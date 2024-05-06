@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Game</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title text-center">Login</h5>
+          </div>
+          <div class="card-body">
+            <form id="loginForm">
+              <div class="form-group">
+                <label for="name">Nama</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama">
+              </div>
+              <div class="form-group">
+                <label for="deposit">Jumlah Deposit</label>
+                <input type="number" class="form-control" id="deposit" name="deposit" placeholder="Masukkan jumlah deposit">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Menghentikan form dari pengiriman default
+  
+      // Mendapatkan nilai dari input
+      var name = document.getElementById('name').value;
+      var deposit = parseInt(document.getElementById('deposit').value); // Mengonversi ke integer
+  
+      console.log('Nama:', name);
+      console.log('Deposit:', deposit);
+  
+      // Simpan nilai deposit dalam localStorage untuk digunakan nanti
+      localStorage.setItem('deposit', deposit);
+  
+      // Lakukan pengalihan halaman atau tindakan lainnya, misalnya memulai permainan
+      window.location.href = './game/game.html'; // Ganti 'game.html' dengan halaman permainan yang sesuai
+    });
+  </script>
+  
+</body>
+</html>

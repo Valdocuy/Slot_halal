@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Game</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .slot-icon {
+      width: 100px;
+      height: 100px;
+      position: relative;
+    }
+    .slot-icon img {
+      width: 100%;
+      height: 100%;
+    }
+    .prize-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      display: none;
+    }
+    .prize-text {
+      font-weight: bold;
+      font-size: 24px;
+      color: green;
+      text-align: center;
+    }
+    @keyframes pop-up {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    @keyframes shuffle {
+      0% {
+        transform: rotateY(0deg);
+      }
+      100% {
+        transform: rotateY(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title text-center">Slot halal</h5>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-4">
+                <div class="slot-icon" id="icon1">
+                  <img src="../img/download.jpeg" alt="Icon 1">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="slot-icon" id="icon2">
+                  <img src="../img/download.jpeg" alt="Icon 2">
+
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="slot-icon" id="icon3">
+                  <img src="../img/download.jpeg" alt="Icon 3">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="slot-icon" id="icon4">
+                  <img src="../img/download.jpeg" alt="Icon 4">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="slot-icon" id="icon5">
+                  <img src="../img/download.jpeg" alt="Icon 5">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="slot-icon" id="icon6">
+                  <img src="../img/download.jpeg" alt="Icon 6">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <p class="text-center">Saldo Deposit: <span id="depositAmount"></span></p>
+            <div class="prize-popup" id="prizePopup">
+              <div class="prize-text" id="prizeAmount"></div>
+            </div>
+            <form id="spinForm">
+              <div class="form-group">
+                <label for="betAmount">Masukkan Nominal Taruhan:</label>
+                <input type="number" class="form-control" id="betAmount" name="betAmount" placeholder="Nominal taruhan">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Spin</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Daftar semua ikon yang mungkin
+    var icons = [
+      { name: "Icon 1", img: "./img/icon1.png", prize: "Zoonk" },
+      { name: "Icon 2", img: "./img/icon2.png", prize: "Zoonk" },
+      { name: "Icon 3", img: "./img/icon3.png", prize: 200 },
+      { name: "Icon 4", img: "./img/icon4.png", prize: 500 },
+      { name: "Icon 5", img: "./img/icon5.png", prize: 100 },
+      { name: "Icon 6", img: "./img/icon6.png", prize: "Zoonk" }
+    ];
+  
+    // Ambil deposit dari localStorage saat halaman dimuat
+    var deposit = parseInt(localStorage.getItem('deposit')) || 1000;
+    document.getElementById('depositAmount').innerText = deposit;
+  
+    document.getElementById('spinForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Menghentikan form dari pengiriman default
+  
+      // Mendapatkan nilai taruhan dari input
+      var betAmount = parseInt(document.getElementById('betAmount').value);
+  
+      // Periksa apakah deposit cukup untuk bertaruh
+      if (betAmount < 100 || isNaN(betAmount)) {
+        alert('Taruhan minimal adalah 100!');
+        return;
+      }
+  
+      if (betAmount > deposit) {
+        alert('Deposit tidak cukup!');
+        return;
+      }
+  
+      // Kurangi deposit dengan nilai taruhan
+      deposit -= betAmount;
+  
+      // Simpan deposit yang baru dalam localStorage
+      localStorage.setItem('deposit', deposit);
+  
+      // Perbarui tampilan saldo deposit
+      document.getElementById('depositAmount').innerText = deposit;
+  
+      // Mengacak ikon-ikon
+      shuffleIcons();
+  
+      // Tunggu 3 detik sebelum menampilkan hasil spin
+      setTimeout(function() {
+        // Menampilkan hadiah
+        displayPrize();
+      }, 3000);
+    });
+  
+    // Fungsi untuk mengacak urutan ikon-ikon
+    function shuffleIcons() {
+      icons.sort(function() { return 0.5 - Math.random() });
+      for (var i = 0; i < icons.length; i++) {
+        document.getElementById('icon' + (i + 1)).style.animation = 'shuffle 2s linear';
+        setTimeout(function(icon) {
+          icon.style.animation = '';
+        }, 2000, document.getElementById('icon' + (i + 1)));
+      }
+    }
+  
+    // Fungsi untuk menampilkan hadiah
+    function displayPrize() {
+      var icon = icons[0];
+      var prize = icon.prize;
+      // Memeriksa apakah ikon adalah gambar 2, 4, atau 6
+      if (prize === "Zoonk") {
+        deposit -= 800; // Kurangi saldo jika mendapatkan "Zoonk"
+        prize = '<span style="color: red;">Zoonk</span>';
+      } else {
+        // Menampilkan pop-up dengan hadiah
+        document.getElementById('prizeAmount').innerHTML = '<span style="color: green;">$' + prize + '</span>';
+        document.getElementById('prizePopup').style.display = 'block';
+        document.getElementById('prizePopup').style.animation = 'pop-up 0.5s ease-out';
+        setTimeout(function() {
+          document.getElementById('prizePopup').style.display = 'none';
+        }, 2000);
+        deposit += parseInt(prize);
+      }
+      localStorage.setItem('deposit', deposit);
+      document.getElementById('depositAmount').innerText = deposit;
+    }
+  </script>
+  
+</body>
+</html>
